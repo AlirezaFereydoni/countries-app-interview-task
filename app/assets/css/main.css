@@ -1,5 +1,47 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: blue;
+  --color-very-dark-blue: hsl(200, 15%, 8%);
+  --color-dark-gray: hsl(0, 0%, 52%);
+  --color-very-light-gray: hsl(0, 0%, 98%);
+  --color-white: hsl(0, 0%, 100%);
+  --color-dark-blue: hsl(209, 23%, 22%);
+  --color-very-dark-blue-bg: hsl(207, 26%, 17%);
+  --font-family-nunito: 'Nunito Sans', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-semibold: 600;
+  --font-weight-extrabold: 800;
+  --font-size-homepage: 14px;
+  --font-size-detail: 16px;
+}
+
+[data-theme='light'] {
+  --bg-primary: var(--color-very-light-gray);
+  --bg-secondary: var(--color-white);
+  --text-primary: var(--color-very-dark-blue);
+  --text-secondary: var(--color-dark-gray);
+  --input-bg: var(--color-white);
+  --input-text: var(--color-very-dark-blue);
+}
+
+[data-theme='dark'] {
+  --bg-primary: var(--color-very-dark-blue-bg);
+  --bg-secondary: var(--color-dark-blue);
+  --text-primary: var(--color-white);
+  --text-secondary: var(--color-white);
+  --input-bg: var(--color-dark-blue);
+  --input-text: var(--color-white);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-nunito);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease-in-out;
 }
