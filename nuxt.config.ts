@@ -22,5 +22,15 @@ export default defineNuxtConfig({
     },
   },
 
+  fonts: {
+    families: [
+      {
+        name: 'Nunito Sans',
+        provider: 'google',
+        weights: [300, 600, 800],
+      },
+    ],
+  },
+
   ssr: true,
 });

@@ -20,8 +20,6 @@
   --bg-secondary: var(--color-white);
   --text-primary: var(--color-very-dark-blue);
   --text-secondary: var(--color-dark-gray);
-  --input-bg: var(--color-white);
-  --input-text: var(--color-very-dark-blue);
 }
 
 [data-theme='dark'] {
@@ -29,14 +27,6 @@
   --bg-secondary: var(--color-dark-blue);
   --text-primary: var(--color-white);
   --text-secondary: var(--color-white);
-  --input-bg: var(--color-dark-blue);
-  --input-text: var(--color-white);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 body {
