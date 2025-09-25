@@ -22,14 +22,15 @@ export interface Country {
 
 export interface CountryDetailed extends Country {
   borders: string[];
+  capital: string[];
   languages: {
     [key: string]: string;
   };
   currencies: {
     [key: string]: {
       name: string;
+      symbol: string;
     };
   };
   subregion: string;
-  topLevelDomain: string[];
 }

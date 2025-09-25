@@ -18,7 +18,12 @@ API.get('/all?fields=name,population,region,capital,flags')
 <template>
   <div class="w-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-15">
-      <CountryCard v-for="country in countries" :key="country.name.common" :country="country" />
+      <CountryCard
+        v-for="country in countries"
+        :key="country.name.common"
+        :country="country"
+        :to="`/${country.name.common.toLowerCase()}`"
+      />
     </div>
   </div>
 </template>
