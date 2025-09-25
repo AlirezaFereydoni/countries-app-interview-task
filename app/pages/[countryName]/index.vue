@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import type { CountryDetailed } from '~/types';
-import Button from '~/components/atomic/Button.vue';
+import Button from '~/components/form/Button.vue';
 import TitleValue from '~/components/atomic/TitleValue.vue';
 import Loading from '~/components/atomic/Loading.vue';
 import Error from '~/components/atomic/Error.vue';
