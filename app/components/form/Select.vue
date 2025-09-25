@@ -5,18 +5,37 @@
       class="flex items-center justify-between w-full pl-4 py-4 rounded-md shadow select-button"
       :class="className"
     >
-      <span class="text-left">{{ displayValue }}</span>
-      <Icon
-        name="heroicons:chevron-down"
-        class="w-5 h-5 mr-4 transition-transform duration-200"
-        :class="{ 'rotate-180': isOpen }"
-      />
+      <span class="text-left select-text" :class="{ 'is-placeholder': isPlaceholder }">
+        {{ displayValue }}
+      </span>
+      <div class="flex items-center gap-2 mr-4">
+        <button
+          v-if="!isPlaceholder"
+          @click.stop="resetValue"
+          class="flex items-center justify-center w-5 h-5 rounded-full transition-colors duration-200 reset-button"
+          title="Clear selection"
+        >
+          <Icon name="heroicons:x-mark" class="w-4 h-4" />
+        </button>
+        <Icon
+          name="heroicons:chevron-down"
+          class="w-5 h-5 transition-transform duration-200"
+          :class="{ 'rotate-180': isOpen }"
+        />
+      </div>
     </button>
 
-    <Transition name="dropdown">
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 -translate-y-2"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-2"
+    >
       <div
         v-if="isOpen"
-        class="absolute top-full left-0 right-0 mt-1 rounded-md shadow-lg border z-50 select-dropdown"
+        class="absolute top-full left-0 right-0 mt-1 rounded-md shadow-lg z-50 select-dropdown"
       >
         <ul class="py-2">
           <li
@@ -56,6 +75,11 @@ const displayValue = computed(() => {
   return selectedOption?.label || props.placeholder || 'Select an option';
 });
 
+const isPlaceholder = computed(() => {
+  const selectedOption = props.options.find(option => option.value === selectedValue.value);
+  return !selectedOption;
+});
+
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
@@ -63,6 +87,12 @@ const toggleDropdown = () => {
 const selectOption = (option: SelectOption) => {
   selectedValue.value = option.value;
   props.onChange(option.value);
+  isOpen.value = false;
+};
+
+const resetValue = () => {
+  selectedValue.value = '';
+  props.onChange('');
   isOpen.value = false;
 };
 
@@ -94,10 +124,17 @@ watch(
   background-color: var(--bg-secondary);
 }
 
+.select-text {
+  color: var(--text-primary);
+}
+
+.select-text.is-placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
 .select-dropdown {
   background-color: var(--bg-secondary);
-  border-color: var(--text-secondary);
-  opacity: 1;
 }
 
 .select-option {
@@ -110,17 +147,14 @@ watch(
 
 .selected-option {
   background-color: var(--bg-primary);
-  font-weight: 600;
 }
 
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.2s ease;
+.reset-button {
+  color: var(--text-secondary);
 }
 
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+.reset-button:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
 }
 </style>
