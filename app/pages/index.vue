@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import type { AxiosError, AxiosResponse } from 'axios';
 import type { Country } from '~/types';
-import API from '~/utils/service';
+const config = useRuntimeConfig();
 
-const countries = ref<Country[]>([]);
-
-API.get('/all?fields=name,population,region,capital,flags')
-  .then((data: AxiosResponse<Country[]>) => {
-    console.log('Countries data:', data);
-    countries.value = data.data;
-  })
-  .catch((error: AxiosError<Country[]>) => {
-    console.error('API Error:', error);
-  });
+const {
+  data: countries,
+  pending,
+  error,
+} = useAsyncData(
+  'countries',
+  async () =>
+    await $fetch<Country[]>(`${config.public.API_URL}/all`, {
+      params: {
+        fields: 'name,population,region,capital,flags',
+      },
+    })
+);
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full" v-if="countries">
+    <!-- <div class="flex items-center justify-between">
+      <Input v-model="search" placeholder="Search for a country" />
+      <Select v-model="region" :options="regions" placeholder="Select a region" />
+    </div> -->
+
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-15">
       <CountryCard
         v-for="country in countries"
@@ -26,4 +33,7 @@ API.get('/all?fields=name,population,region,capital,flags')
       />
     </div>
   </div>
+
+  <Loading v-else-if="pending" />
+  <Error v-else-if="error" message="Failed to fetch countries" />
 </template>

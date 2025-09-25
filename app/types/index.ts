@@ -33,4 +33,7 @@ export interface CountryDetailed extends Country {
     };
   };
   subregion: string;
+  tld: string[];
 }
+
+export type Theme = 'light' | 'dark';

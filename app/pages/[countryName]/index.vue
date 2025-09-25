@@ -2,15 +2,7 @@
   <div>
     <Button label="Go Back" icon="heroicons:arrow-left" :onClick="goBack" />
 
-    <div v-if="error">
-      <p class="text-red-500 text-center mx-auto">⚠️ This Country is not found</p>
-    </div>
-
-    <div v-else-if="pending">
-      <p class="text-center mx-auto my-auto">Loading...</p>
-    </div>
-
-    <div v-else-if="country" class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 mt-20">
+    <div v-if="country" class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 mt-20">
       <NuxtImg
         :src="country.flags.svg"
         :alt="country.flags.alt"
@@ -68,6 +60,9 @@
         </div>
       </div>
     </div>
+
+    <Loading v-if="pending" />
+    <Error v-else-if="error" message="This Country is not found" />
   </div>
 </template>
 
@@ -75,6 +70,8 @@
 import type { CountryDetailed } from '~/types';
 import Button from '~/components/atomic/Button.vue';
 import TitleValue from '~/components/atomic/TitleValue.vue';
+import Loading from '~/components/atomic/Loading.vue';
+import Error from '~/components/atomic/Error.vue';
 
 const config = useRuntimeConfig();
 

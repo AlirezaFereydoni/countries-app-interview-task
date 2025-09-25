@@ -22,6 +22,12 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    public: {
+      API_URL: 'https://restcountries.com/v3.1',
+    },
+  },
+
   fonts: {
     families: [
       {
