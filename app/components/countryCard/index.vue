@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/${country.name.official.toLowerCase()}`">
+  <NuxtLink :to="to">
     <div class="w-full shadow-md rounded-lg overflow-hidden country-card">
       <NuxtImg
         :src="country.flags.png"
@@ -26,6 +26,7 @@ import TitleValue from '../atomic/TitleValue.vue';
 
 defineProps<{
   country: Country;
+  to: string;
 }>();
 </script>
 
