@@ -1,35 +1,70 @@
 <template>
   <div>
     <Button label="Go Back" icon="heroicons:arrow-left" :onClick="goBack" />
-    <div v-if="country" class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 mt-20">
-      <NuxtImg :src="country.flags.svg" :alt="country.flags.alt" class="w-full h-110" />
-      <div class="px-15 py-10">
-        <h2 class="font-extrabold text-4xl">{{ country.name.common }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
-          <TitleValue title="Population" :value="formatNumberWithCommas(country.population)" />
-          <TitleValue title="Region" :value="country.region" />
-          <TitleValue title="Capital" :value="country.capital.join(', ')" />
-          <TitleValue title="Languages" :value="Object.values(country.languages).join(', ')" />
-          <TitleValue
-            title="Currencies"
-            :value="
-              Object.values(country.currencies)
-                .map(currency => currency.name)
-                .join(', ')
-            "
-          />
-          <TitleValue title="Subregion" :value="country.subregion" />
-          <!-- <TitleValue title="Top Level Domain" :value="country.topLevelDomain.join(', ')" /> -->
+
+    <div v-if="error">
+      <p class="text-red-500 text-center mx-auto">⚠️ This Country is not found</p>
+    </div>
+
+    <div v-else-if="pending">
+      <p class="text-center mx-auto my-auto">Loading...</p>
+    </div>
+
+    <div v-else-if="country" class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 mt-20">
+      <NuxtImg
+        :src="country.flags.svg"
+        :alt="country.flags.alt"
+        class="w-full md:h-110 object-cover"
+      />
+
+      <div class="md:px-15 md:py-10">
+        <h2 class="font-extrabold text-2xl md:text-4xl">{{ country.name.common }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
+          <div class="flex flex-col gap-3">
+            <TitleValue
+              title="Native Name"
+              :value="
+                Object.values(country.name.nativeName)
+                  .map(name => name.common)
+                  .join(', ')
+              "
+            />
+            <TitleValue title="Population" :value="formatNumberWithCommas(country.population)" />
+            <TitleValue title="Region" :value="country.region" />
+            <TitleValue title="Sub Region" :value="country.subregion" />
+            <TitleValue title="Capital" :value="country.capital?.join(', ')" />
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <TitleValue title="Top Level Domain" :value="country.tld?.join(', ')" />
+            <TitleValue
+              title="Currencies"
+              :value="
+                Object.values(country.currencies || {})
+                  .map(currency => currency.name)
+                  .join(', ')
+              "
+            />
+            <TitleValue
+              title="Languages"
+              :value="Object.values(country.languages || {}).join(', ')"
+            />
+          </div>
         </div>
 
-        <div v-if="country.borders.length > 0" class="flex items-center gap-2">
-          <p class="mr-2">Borders:</p>
-          <Button
-            v-for="border in country.borders"
-            :key="border"
-            :label="border"
-            :onClick="() => goToCountry(border)"
-          />
+        <div
+          v-if="country.borders?.length"
+          class="grid grid-cols-1 md:flex md:items-center gap-5 mt-10"
+        >
+          <p class="font-semibold">Border Countries:</p>
+          <div class="flex items-center gap-2 overflow-x-auto p-1">
+            <Button
+              v-for="border in country.borders"
+              :key="border"
+              :label="border"
+              :onClick="() => goToCountry(border)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -37,36 +72,33 @@
 </template>
 
 <script setup lang="ts">
-import type { AxiosError, AxiosResponse } from 'axios';
 import type { CountryDetailed } from '~/types';
-import API from '~/utils/service';
 import Button from '~/components/atomic/Button.vue';
+import TitleValue from '~/components/atomic/TitleValue.vue';
 
-const { countryName } = useRoute().params;
+const config = useRuntimeConfig();
+
+const route = useRoute();
 const router = useRouter();
+const countryName = route.params.countryName as string;
 
 const goBack = () => router.back();
 const goToCountry = (border: string) => router.push(`/${border}`);
 
-const country = ref<CountryDetailed | null>(null);
-
-onMounted(() => {
-  API.get(
-    `/name/${countryName}?fullText=true&fields=name,population,region,capital,flags,borders,languages,currencies,subregion,topLevelDomain`
-  )
-    .then((data: AxiosResponse<CountryDetailed[]>) => {
-      console.log('Countries data:', data);
-      country.value = data.data[0] || null;
-    })
-    .catch((error: AxiosError<CountryDetailed[]>) => {
-      console.error('API Error:', error);
+const {
+  data: country,
+  pending,
+  error,
+} = await useAsyncData(
+  () => `country-${countryName}`,
+  async () => {
+    const res = await $fetch<CountryDetailed[]>(`${config.public.API_URL}/name/${countryName}`, {
+      params: {
+        fullText: true,
+        fields: 'name,population,region,capital,flags,borders,languages,currencies,subregion,tld',
+      },
     });
-});
-console.log('Country:', country.value);
+    return res[0];
+  }
+);
 </script>
-
-<style scoped>
-.back-button {
-  background-color: var(--bg-primary);
-}
-</style>
