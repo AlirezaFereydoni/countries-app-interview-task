@@ -7,14 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { useTheme } from '~/composables/useTheme';
 
-const { theme, initializeTheme } = useTheme();
-
-onMounted(() => {
-  initializeTheme();
-});
+const { theme } = useTheme();
 </script>
 
 <style scoped>
