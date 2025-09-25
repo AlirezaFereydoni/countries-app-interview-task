@@ -1,42 +1,3 @@
-<script setup lang="ts">
-import type { Country } from '~/types';
-import Input from '~/components/form/Input.vue';
-import Select from '~/components/form/Select.vue';
-
-const config = useRuntimeConfig();
-
-const {
-  data: countries,
-  pending,
-  error,
-} = useAsyncData(
-  'countries',
-  async () =>
-    await $fetch<Country[]>(`${config.public.API_URL}/all`, {
-      params: {
-        fields: 'name,population,region,capital,flags',
-      },
-    })
-);
-
-const {
-  search,
-  selectedRegion,
-  sortBy,
-  filteredCountries,
-  handleRegionChange,
-  handleSortChange,
-  updateSearch,
-} = useFilter(countries);
-
-const regionOptions = computed(() => {
-  if (!countries.value) return [];
-
-  const regions = [...new Set(countries.value.map(country => country.region))];
-  return [...regions.map(region => ({ value: region, label: region }))];
-});
-</script>
-
 <template>
   <div class="w-full" v-if="countries">
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
@@ -81,3 +42,45 @@ const regionOptions = computed(() => {
   <Loading v-else-if="pending" />
   <Error v-else-if="error" message="Failed to fetch countries" />
 </template>
+
+<script setup lang="ts">
+import type { Country } from '~/types';
+import Input from '~/components/form/Input.vue';
+import Select from '~/components/form/Select.vue';
+import CountryCard from '~/components/cards/Country.vue';
+import Loading from '~/components/UI/Loading.vue';
+import Error from '~/components/UI/Error.vue';
+
+const config = useRuntimeConfig();
+
+const {
+  data: countries,
+  pending,
+  error,
+} = useAsyncData(
+  'countries',
+  async () =>
+    await $fetch<Country[]>(`${config.public.API_URL}/all`, {
+      params: {
+        fields: 'name,population,region,capital,flags',
+      },
+    })
+);
+
+const {
+  search,
+  selectedRegion,
+  sortBy,
+  filteredCountries,
+  handleRegionChange,
+  handleSortChange,
+  updateSearch,
+} = useFilter(countries);
+
+const regionOptions = computed(() => {
+  if (!countries.value) return [];
+
+  const regions = [...new Set(countries.value.map(country => country.region))];
+  return [...regions.map(region => ({ value: region, label: region }))];
+});
+</script>

@@ -23,9 +23,11 @@ const initializeTheme = () => {
   }
 };
 
-if (import.meta.client) {
-  initializeTheme();
-}
+onMounted(() => {
+  if (import.meta.client) {
+    initializeTheme();
+  }
+});
 
 watch(theme, newTheme => {
   applyTheme(newTheme);

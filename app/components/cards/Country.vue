@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import type { Country } from '~/types';
-import TitleValue from '../atomic/TitleValue.vue';
+import TitleValue from '../UI/TitleValue.vue';
 
 defineProps<{
   country: Country;
