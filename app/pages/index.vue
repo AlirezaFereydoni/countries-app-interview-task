@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full" v-if="countries">
+  <div class="w-full" v-if="countries && countries.length > 0">
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
       <div class="w-full md:w-100">
         <Input :value="search" :updateValue="updateSearch" placeholder="Search for a country..." />
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-20 gap-y-15">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-15 gap-y-15">
       <CountryCard
         v-for="country in filteredCountries"
         :key="country.name.common"
@@ -67,6 +67,8 @@ const {
     })
 );
 
+const cloneCountries = computed(() => [...(countries?.value || [])]);
+
 const {
   search,
   selectedRegion,
@@ -75,7 +77,7 @@ const {
   handleRegionChange,
   handleSortChange,
   updateSearch,
-} = useFilter(countries);
+} = useFilter(cloneCountries);
 
 const regionOptions = computed(() => {
   if (!countries.value) return [];
