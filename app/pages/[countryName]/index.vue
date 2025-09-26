@@ -6,7 +6,7 @@
       <NuxtImg
         :src="country.flags.svg"
         :alt="country.flags.alt"
-        class="w-full md:h-110 object-cover"
+        class="w-full md:h-110 object-fill aspect-auto"
       />
 
       <div class="md:px-15 md:py-10">
